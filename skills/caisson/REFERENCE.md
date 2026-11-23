@@ -47,8 +47,10 @@ Changes apply in order, then all land or none do. CLI JSON is `{"changes": [...]
   finds or starts; the next run reuses it, re-synced to the caisson first. It goes 10 minutes after its last command
   (or after an idle minute when another of your requests waits for room) and `/work` stays for the next one. A
   machine still waiting for room keeps its place: run the same command again. `repo test` runs a ref as committed, once.
-- The repository's `.sailfork/workspace.toml` sets the image, CPUs, memory, disk, command limit and a `setup` command;
-  a flag on the call wins, and a value your machine does not match replaces it.
+- The repository's `.sailfork/workspace.toml` sets the image, CPUs, memory, disk, command limit, a `setup` command and
+  `sparse` folders; a flag on the call wins, and a value your machine does not match replaces it. Code over the
+  sandbox limits ("the code is too large for a sandbox") needs `--sparse FOLDER` (MCP `sparse`, repeatable) or the
+  `sparse` list: only those folders, the files at the top of the tree and of their parent folders go in `/work`.
 - `--compare` (MCP `compare: true`) runs the command on the caisson's base commit and on its edits at once, in two
   sandboxes it destroys, so one call answers whether the edits broke or fixed it. The answer is a verdict line
   (`the edits fixed it`, `the edits broke it`, `same exit`), the output lines only the base and only the edits printed
