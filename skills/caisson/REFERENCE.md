@@ -40,9 +40,8 @@ Changes apply in order, then all land or none do. CLI JSON is `{"changes": [...]
 
 ## Sandboxes (`caisson test`, `repo test`)
 
-- Need a Drydock host: a Linux machine with Docker an org owner registered with `sailfork sandbox host add NAME --org
-  ORG`, then `curl -fsSL https://sailfork.com/install/drydock | sh` and `sudo drydockd install --server
-  https://sailfork.com --token TOKEN` on it.
+- Need a Drydock host: a Linux machine with Docker that an org owner registered with `sailfork sandbox host add NAME
+  --org ORG` and set up by following https://sailfork.com/docs. With none, tell the person; don't set one up.
 - `caisson test` runs the base plus your uncommitted edits in `/work` of your machine on the caisson, which Sailfork
   finds or starts; the next run reuses it, re-synced to the caisson first. It goes 10 minutes after its last command
   (or after an idle minute when another of your requests waits for room) and `/work` stays for the next one. A
