@@ -82,6 +82,11 @@ and branch where pieces are independent.
   --issue N`; independent pieces stack on the same parent as siblings. Every pull request must build and pass on its
   own; from a caisson, open it with `--base` set to the branch below. `sailfork pr stack PR` prints the whole tree;
   ask it from a pull request within 32 levels of the root.
+- **Parallel or in order:** pieces that change the same files, or the same generated output (one operation catalog
+  feeding SDKs and `openapi.json`, one lockfile, one docs page), go one after another with `--blocked-by` and a
+  stack, never side by side: parallel ones each rebase, regenerate and recheck after every merge. Before starting
+  pieces in parallel, `sailfork inflight touching NAME` on what each will change shows the overlap, and it also
+  names other sessions' open work on the same code.
 - **Landing:** each pull request is reviewed and fixed on its own. When a merge is asked, `sailfork pr merge TOP
   --stack` merges the ones below first, bottom-up; the server restacks the branches above each merge, so nothing
   needs a hand rebase.
@@ -131,8 +136,13 @@ MCP: `issue_create` with `title`, `body`, `labels`, `priority`, `estimate`, `ass
    over a direct merge: with a merge queue it joins the queue, which tests and merges in order so concurrent merges
    do not race. `sailfork queue status` shows the line and why a PR left it; merging past the queue is a person's
    call in the browser.
+   Before merging, `sailfork inflight conflicts --pull N` and `sailfork inflight risk --pull N` show which open
+   changes will clash with it and how risky it is; merge the lower-risk or upstream one first.
    Behind: `pr update-branch N`. Conflicts: `pr conflicts N`, `pr conflicts N --path P --merged > F`, then
-   `pr resolve N --file P=F` or `--take head|base`. Done when the user asked and it reports merged.
+   `pr resolve N --file P=F` or `--take head|base`. Never `--take base` for a file the pull request changed on
+   purpose: it drops that change without an error. Take base only for generated files, then rerun the generator
+   on the branch and check the pull request's diff still holds everything it should. Done when the user asked and it
+   reports merged.
 
 ## Send feedback to Sailfork
 
