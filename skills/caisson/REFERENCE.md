@@ -80,6 +80,20 @@ Changes apply in order, then all land or none do. CLI JSON is `{"changes": [...]
 - In a `rust:1` sandbox whose image lacks the toolchain the repository pins, the first `cargo` call installs it with
   rustup. Let that call finish before starting a second one; two installs at once fail with `detected conflict`.
 
+## Browser
+
+- No image has a browser unless you pick one. For screenshots, a viewport check or a scripted click-through of a page
+  your change serves, pass `--image mcr.microsoft.com/playwright:v1.65.1-noble` (MCP `image`) to `caisson test`: it
+  ships Chromium and node. Do not install Chromium into the repository's image yourself.
+- Start the app on `localhost` and drive it in the same command, so the server is still up: Playwright directly, or
+  `browse shot URL out.png --full --width 390` and `browse run script.mjs` after its setup line. Bring results back
+  with `outputs` (binaries come back by size; attach a screenshot to a pull request with `issue_attach_sandbox_file`).
+  Setup, options and errors: https://sailfork.com/docs/sandbox-browser.
+- The image is about 3.7 GB and pulled once per host. An org or host that restricts images refuses it until an owner
+  allows `mcr.microsoft.com/playwright:*` (`sailfork sandbox settings set --allowed-images`); tell the user, do not
+  work around it.
+- A person who wants to look at the page needs a link instead: `sf cs preview ID` (MCP `caisson_preview`).
+
 ## Limits
 
 Files up to 10 MiB. A read takes up to 100 files, a batch up to 2000. Grep skips binary files and files over 2 MiB and
